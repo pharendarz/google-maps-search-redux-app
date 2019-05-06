@@ -6,7 +6,10 @@ class Snackbars extends PureComponent {
         console.log('PROPS IN SNACKBAR', this.props.snackbars);
         switch(this.props.snackbars[0]){
             case 'ZERO_RESULTS':
-                this.props.enqueueSnackbar(`NO RESULT KURWA ${this.props.snackbars[0]}.`);
+                this.props.enqueueSnackbar(
+                    `No results for this location.`, 
+                    {variant: 'error'}
+                );
                 break;
             case 'NO_RESULTS_FOUND':
                 this.props.enqueueSnackbar(`No results found.`);
