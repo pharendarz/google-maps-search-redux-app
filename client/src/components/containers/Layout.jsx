@@ -3,6 +3,7 @@ import React, {Component} from 'react';
 import GoogleMap from '../maps/GoogleMap';
 import SearchBar from '../inputs/SearchBar';
 import PlacesList from '../expansion_panels/PlacesList';
+import Snackbars from '../snackbars/Snackbar';
 //style
 import {Grid, Paper} from '@material-ui/core/'
 import { withStyles } from '@material-ui/core/styles';
@@ -13,6 +14,7 @@ import {addOneLocationToBufferList} from '../../actions/locationBufferActions';
 import {initMap} from '../../actions/mapActions';
 import {addMarker} from '../../actions/markersActions';
 import {addInfoWindow, getCurrentInfoWindows} from '../../actions/infoWindowsActions';
+import {changeCurrentSnackbar} from '../../actions/snackbarsActions';
 //app functions
 import {handleRenderMap} from '../../functions/mapFunctions';
 const showAllInfoWindows = false;
@@ -62,10 +64,9 @@ class Layout extends Component {
                                 places={this.props.locationsOnList} 
                                 map={this.props.map}
                             />
-                        
                         </Grid>
                     </Grid>
-                
+                    <Snackbars snackbars={this.props.snackbars}/>
                 </Paper>
             </div>
         )
@@ -76,7 +77,8 @@ const mapStateToProps = (state) => {
     return {
         locationsOnList: state.locationsOnList,
         map: state.map,
-        showAllInfoWindows: showAllInfoWindows
+        showAllInfoWindows: showAllInfoWindows,
+        snackbars: state.snackbars,
     }
 }
 export default connect(
@@ -86,5 +88,6 @@ export default connect(
         initMap, 
         addMarker, 
         addInfoWindow,
-        getCurrentInfoWindows
+        getCurrentInfoWindows,
+        changeCurrentSnackbar
     })(withStyles(styles)(Layout));

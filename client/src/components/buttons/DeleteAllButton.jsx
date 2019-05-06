@@ -1,10 +1,28 @@
 import React from 'react';
-import {Button} from '@material-ui/core';
+import {Button, Badge} from '@material-ui/core';
+import { withSnackbar } from 'notistack';
+
+const handleDeleteAllLocations = (props) => {
+    props.deleteAllLocationsFromLocationList(props.passProps)
+    //props.enqueueSnackbar(`Deleted ${props.passProps.locationsOnList.length} locations from list.`);
+}
 
 const DeleteAllButton = (props) => {
     return (
-        <Button onClick={() => props.handleDeleteAllLocations(props.passProps)}>Delete all</Button> 
+        <Badge 
+            badgeContent={props.passProps.locationsOnList.length} 
+            max={9} color="secondary" 
+            invisible={props.passProps.locationsOnList.length === 0}
+        >
+            <Button 
+                disabled={props.passProps.locationsOnList.length === 0}
+                variant="outlined" 
+                onClick={() => {handleDeleteAllLocations(props)}}
+            >
+                Delete all
+            </Button> 
+        </Badge>
     )
 }
 
-export default DeleteAllButton;
+export default withSnackbar(DeleteAllButton);

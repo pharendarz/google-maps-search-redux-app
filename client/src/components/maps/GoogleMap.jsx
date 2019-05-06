@@ -4,9 +4,9 @@ import React from 'react';
 import '../../App.css';
 
 const GoogleMap = () => {
-        return(
-            <div id="map"></div>
-        )
+    return(
+        <div id="map"></div>
+    )
 }
 
 export default GoogleMap;

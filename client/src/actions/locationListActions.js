@@ -17,17 +17,17 @@ export const deleteOneLocationFromLocationList = (objPlace) => {
 }
 export const deleteAllLocationsFromLocationList = (props) => (dispatch) => {
 
-    props.locationsOnList.forEach(location => {
-        // console.log('location', location);
+    props.locationsOnList.forEach(async location => {
         
-        // dispatch(deleteMarker(location.marker));
-        getPlaceByGeocodeLatLng(
+        const resultFromGeo = await getPlaceByGeocodeLatLng(
             location.latLng, 
             props.map, 
             location, 
             props, 
             '_findAndDeleteStoredMarker',
             null);
-        // dispatch(deleteOneLocationFromLocationList(location));
+        // call action for show snackbar if over query    
+        if (resultFromGeo)
+            dispatch(props.changeCurrentSnackbar(resultFromGeo));
     })
 }

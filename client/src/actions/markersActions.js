@@ -5,7 +5,6 @@ export const addMarker = (marker) => {
     }
 }
 export const deleteMarker = (marker) => {
-    // console.log('MARKER::::::::::::::::::::::::::::', marker)
     return {
         type: 'DELETE_MARKER',
         payload: marker

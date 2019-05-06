@@ -17,6 +17,8 @@ class AddToListButton extends Component {
         const locationCounter = (
             <Badge badgeContent={this.props.locationsBuffer.length} max={9} color="primary" invisible={this.props.locationsBuffer.length === 0}>
                 <Button 
+                    disabled={this.props.locationsBuffer.length === 0}
+                    variant="outlined"
                     onClick={this.handleAddToListFromBuffer}
                     color="secondary">Add to List
                 </Button>

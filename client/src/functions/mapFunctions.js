@@ -31,8 +31,11 @@ const _initGoogleMap = (props) => {
 
     // #LISTENERS
     // add listener for mouse click on map
-    map.addListener('click', (event) => {
-        placeMarkerAndPanTo(event.latLng, map, props);
+    map.addListener('click', async (event) => {
+      const result = await _placeMarkerAndPanTo(event.latLng, map, props);
+      if(result)
+        props.changeCurrentSnackbar(result);
+
     });
     // add listener for autocomplete after selection from SearchBar
     autocomplete.addListener('place_changed', () => {
@@ -41,67 +44,98 @@ const _initGoogleMap = (props) => {
 }
 
 export const getPlaceByGeocodeLatLng = (input, map, place, props, next , marker) => {
+    return new Promise((resolve, reject) => {
 
-    const geocoder = new window.google.maps.Geocoder;
-    // const infowindow = new window.google.maps.InfoWindow;
-
-    const latlngStr = input.split(',', 2);
-    const latlng = {lat: parseFloat(latlngStr[0]), lng: parseFloat(latlngStr[1])};
-
-    geocoder.geocode({'location': latlng}, (results, status) => {
-      if (status === 'OK') {
-        if (results[0]) {
-          map.setZoom(7);
-          // call next function
-          switch(next){
-              case '_addMarkerAfterClickOnMap': {
-                  const parameters = {
-                      latlng: latlng, 
-                      map: map, 
-                      input: input, 
-                      results: results[0].formatted_address, 
-                      props: props,
-                      marker: marker,
-                  };
-
-                  _addMarkerAfterClickOnMap(parameters);
+      const geocoder = new window.google.maps.Geocoder;
+  
+      const latlngStr = input.split(',', 2);
+      const latlng = {lat: parseFloat(latlngStr[0]), lng: parseFloat(latlngStr[1])};
+  
+      geocoder.geocode({'location': latlng}, (results, status) => {
+  
+        if (status === 'OK') {
+          if (results[0]) {
+            map.setZoom(7);
+            // call next function
+            switch(next){
+                case '_addMarkerAfterClickOnMap': {
+                    const parameters = {
+                        latlng: latlng, 
+                        map: map, 
+                        input: input, 
+                        results: results[0].formatted_address, 
+                        props: props,
+                        marker: marker,
+                        place: place
+                    };
+  
+                    _addMarkerAfterClickOnMap(parameters);
+                    break;
+                }
+                case '_findAndSelectStoredMarker': {
+                    const parameters = {
+                        props: props,
+                        map: map, 
+                        results: results[0].formatted_address, 
+                        place: place
+                    };
+  
+                    _findAndSelectStoredMarker(parameters);
+                    break;
+                }
+                case '_findAndDeleteStoredMarker': {
+                    const parameters = {
+                        props: props,
+                        place: place
+                    };
+  
+                    _findAndDeleteStoredMarker(parameters);
+                    break;
+                }
+                default:
                   break;
-              }
-              case '_findAndSelectStoredMarker': {
-                  const parameters = {
-                      props: props,
-                      map: map, 
-                      results: results[0].formatted_address, 
-                      place: place
-                  };
-
-                  _findAndSelectStoredMarker(parameters);
-                  break;
-              }
-              case '_findAndDeleteStoredMarker': {
-                  const parameters = {
-                      props: props,
-                      place: place
-                  };
-
-                  _findAndDeleteStoredMarker(parameters);
-                  break;
-              }
-              default:
-                break;
+            }
+          } else {
+            resolve('NO_RESULTS_FOUND');
           }
         } else {
-          window.alert('No results found');
-
+          // delete marker when no result has been found
+          if(marker)
+            marker.setMap(null);
+  
+          switch(status){
+            case 'OVER_QUERY_LIMIT':
+              //_repeatNextDueToOverQueryLimit(next, input, map, place, props, marker);
+              resolve(status);
+              break;
+            case 'ZERO_RESULTS':
+              resolve(status);
+              break;
+            default:
+              // default alert for unhandled error status codes
+              window.alert('Geocoder failed due to: ' + status); 
+              break;
+          }
         }
-      } else {
-        // delete marker when no result has been found
-        if(marker)
-          marker.setMap(null);
-
-        window.alert('Geocoder failed due to: ' + status); // << add chips [TODO]
-      }
-    });
+      });
+    })
+}
+const _repeatNextDueToOverQueryLimit = (next, input, map, place, props, marker) => {
+  switch(next){
+    case '_findAndDeleteStoredMarker':
+      setTimeout(
+        getPlaceByGeocodeLatLng(
+          input, 
+          map, 
+          place, 
+          props, 
+          next,
+          marker)
+        , 1000);
+      break;
+      default:
+      break;
+  }
 }
 const _findAndDeleteStoredMarker = (parameters) => {
 
@@ -124,19 +158,23 @@ const _findAndDeleteStoredMarker = (parameters) => {
         props.deleteOneLocationFromLocationList(place);
     }
 }
-export const placeMarkerAndPanTo = (latLng, map, props) => {
-    // calculate lat lng
-    const marker = new window.google.maps.Marker({
-        position: latLng,
-        map: map
-    });
+const _placeMarkerAndPanTo =  (latLng, map, props) => {
+    return new Promise(async (resolve, reject) => {
 
-    map.panTo(latLng);
-    
-    const input = `${marker.getPosition().lat()},${marker.getPosition().lng()}`;
-
-    // translate latlng to place object >> call redux action
-    getPlaceByGeocodeLatLng(input, map,  null, props, '_addMarkerAfterClickOnMap', marker);
+      // calculate lat lng
+      const marker = new window.google.maps.Marker({
+          position: latLng,
+          map: map
+      });
+  
+      map.panTo(latLng);
+      
+      const input = `${marker.getPosition().lat()},${marker.getPosition().lng()}`; //[TODO] > throw to shared functions
+  
+      // translate latlng to place object >> call redux action
+      const resultFromGeo = await getPlaceByGeocodeLatLng(input, map,  null, props, '_addMarkerAfterClickOnMap', marker);
+      resolve(resultFromGeo);
+    })
 }
 
 export const getCurrentLocationFromBrowser = (map) => {
@@ -172,8 +210,6 @@ const _addMarkerAfterClickOnMap = (parameters) => {
     // add marker & infowindow after click on map 
     props.addMarker(marker);
     const infowindow = new window.google.maps.InfoWindow;
-
-    // infowindow.setContent(results + ` ${input}`);
 
     const objToSend = {
         latLng: input, 

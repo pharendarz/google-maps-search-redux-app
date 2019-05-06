@@ -14,6 +14,7 @@ import {connect} from 'react-redux';
 import {deleteMarker} from '../../actions/markersActions';
 import {deleteInfoWindow} from '../../actions/infoWindowsActions'
 import {deleteOneLocationFromLocationList, deleteAllLocationsFromLocationList} from '../../actions/locationListActions';
+import {changeCurrentSnackbar} from '../../actions/snackbarsActions';
 // app components
 import AddToListButton from '../buttons/AddToListButton';
 import DeleteAllButton from '../buttons/DeleteAllButton';
@@ -118,14 +119,13 @@ class LocationsList extends React.Component {
             )
         })
       return (
-          //zrob tez disabled jak nic nie ma
         <div className={classes.root}>
           <Grid container justify="space-between" alignItems="flex-start">
               <Grid item xs={6}>
                 <AddToListButton/>
               </Grid>
               <Grid item xs={6}>
-                <DeleteAllButton handleDeleteAllLocations={this.props.deleteAllLocationsFromLocationList} passProps={this.props}/>
+                <DeleteAllButton deleteAllLocationsFromLocationList={this.props.deleteAllLocationsFromLocationList} passProps={this.props}/>
 
               </Grid>
               <Grid item xs={12}>
@@ -154,5 +154,6 @@ export default withStyles(styles)(
     deleteMarker, 
     deleteInfoWindow, 
     deleteOneLocationFromLocationList,
-    deleteAllLocationsFromLocationList
+    deleteAllLocationsFromLocationList,
+    changeCurrentSnackbar
   })(LocationsList));

@@ -10,9 +10,9 @@ export default (locationsOnList = [], action) => {
             return locationsOnList.filter(element => element !== action.payload);
         case 'DELETE_ALL_LOCATIONS_FROM_LOCATION_LIST':
             return action.payload;
-        // case 'UNDO_ONE_ACTION_LIST':
+        // case 'UNDO_ONE_ACTION_LIST': [TODO]
         //     return locations;
-        // case 'REDO_ONE_ACTION_LIST':
+        // case 'REDO_ONE_ACTION_LIST': [TODO]
         //     return locations;
         default:
             return locationsOnList;

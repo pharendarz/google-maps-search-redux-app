@@ -5,7 +5,7 @@ export const addOneLocationToBufferList = (objPlace) => {
             payload: objPlace,
         }
     else
-    // send to list directly if [AddToList Checkbox] is hecked
+    // send to list directly if [AddToList Checkbox] is hecked [TODO]
     return {
         type: 'ADD_ONE_LOCATION_TO_LIST',
         payload: objPlace,

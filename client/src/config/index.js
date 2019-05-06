@@ -1,4 +1,4 @@
-
+// load provided script to browser
 export const loadScript = (url) => {
     return new Promise(function(resolve, reject){
       var script = document.createElement('script');
