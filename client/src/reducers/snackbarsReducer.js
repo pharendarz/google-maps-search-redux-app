@@ -1,7 +1,7 @@
 export default (snackbars = [], action) => {
     switch(action.type){
         case 'CHANGE_SNACKBAR':
-            return [...snackbars, action.payload];
+            return [action.payload, ...snackbars];
         default:
             return snackbars;
     }
