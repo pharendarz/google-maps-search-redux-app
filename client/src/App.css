@@ -1,0 +1,47 @@
+/* Always set the map height explicitly to define the size of the div
+  * element that contains the map. */
+#map {
+  height: 80vh;
+  width: 65vw;
+}
+/* Optional: Makes the sample page fill the window. */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+#infowindow-content .title {
+  font-weight: bold;
+}
+
+#infowindow-content {
+  display: none;
+}
+
+#map #infowindow-content {
+  display: inline;
+}
+#pac-container {
+  padding-bottom: 12px;
+  margin-right: 12px;
+}
+
+#pac-input {
+  background-color: #fff;
+  font-family: Roboto;
+  font-size: 15px;
+  font-weight: 300;
+  margin-left: 12px;
+  padding: 0 11px 0 13px;
+  text-overflow: ellipsis;
+  width: 400px;
+}
+
+#pac-input:focus {
+  border-color: #4d90fe;
+}
+
+#place-list {
+  height: 80vh;
+  width: 20vw;
+}
