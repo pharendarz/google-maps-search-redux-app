@@ -1,4 +1,5 @@
 import {openOneInfoWindow, createContentStringAutoComplete} from './sharedFunctions';
+import {createObjectFromResult} from './mapFunctions';
 
 export const handleSearchBarSelection = (autocomplete, map, props) => {
     var infowindow = new window.google.maps.InfoWindow({maxWidth: 350});
@@ -20,14 +21,14 @@ export const handleSearchBarSelection = (autocomplete, map, props) => {
     // create new marker after search + set position on map
     var marker = new window.google.maps.Marker({
         position: place.latLng,
-        map: map
+        map: map,
+        animation: window.google.maps.Animation.DROP
     });
     marker.setPosition(place.geometry.location);
     marker.setVisible(true);
 
     // determine latLng
     const latLng = `${marker.getPosition().lat()},${marker.getPosition().lng()}`;
-    console.log(place);
     // create object
     const objToSend = {
         latLng: latLng, 
@@ -37,6 +38,7 @@ export const handleSearchBarSelection = (autocomplete, map, props) => {
         sendToList: false,
         marker: marker,
         infowindow: infowindow,
+        detailed: createObjectFromResult(place)
     }
     // call action - add marker after search bar selection to markers store
     props.addMarker(marker);

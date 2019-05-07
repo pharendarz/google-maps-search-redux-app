@@ -25,7 +25,7 @@ export const createGoogleMapObject = (parameters) => {
 
 }
 
-//[TODO]
+//[TODO - corrections]
 export const createContentStringAutoComplete = (object) => {
   const cuttedLatLng = cutLatLng(object.latLng, 9);
 

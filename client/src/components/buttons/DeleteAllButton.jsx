@@ -4,7 +4,9 @@ import { withSnackbar } from 'notistack';
 
 const handleDeleteAllLocations = (props) => {
     props.deleteAllLocationsFromLocationList(props.passProps)
-    //props.enqueueSnackbar(`Deleted ${props.passProps.locationsOnList.length} locations from list.`);
+    props.enqueueSnackbar(
+        `Deleted ${props.passProps.locationsOnList.length} locations from list.`,
+        {variant: 'info',});
 }
 
 const DeleteAllButton = (props) => {

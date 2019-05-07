@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 import Layout from './components/containers/Layout';
 // redux
 import {Provider} from 'react-redux';
@@ -21,7 +20,6 @@ ReactDOM.render
     (<Provider store={store}>
         <SnackbarProvider maxSnack={3}>
             <Layout/>   
-
         </SnackbarProvider>
     </Provider>, 
         document.getElementById('root')

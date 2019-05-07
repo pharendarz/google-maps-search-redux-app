@@ -56,40 +56,23 @@ export const getPlaceByGeocodeLatLng = (input, map, place, props, next , marker)
         if (status === 'OK') {
           if (results[0]) {
             map.setZoom(7);
+            const parameters = {
+              latlng: latlng, 
+              map: map, 
+              input: input, 
+              results: results[0], 
+              props: props,
+              marker: marker,
+              place: place
+            };
             // call next function
             switch(next){
                 case '_addMarkerAfterClickOnMap': {
-                    const parameters = {
-                        latlng: latlng, 
-                        map: map, 
-                        input: input, 
-                        results: results[0].formatted_address, 
-                        props: props,
-                        marker: marker,
-                        place: place
-                    };
-  
                     _addMarkerAfterClickOnMap(parameters);
                     break;
                 }
                 case '_findAndSelectStoredMarker': {
-                    const parameters = {
-                        props: props,
-                        map: map, 
-                        results: results[0].formatted_address, 
-                        place: place
-                    };
-  
                     _findAndSelectStoredMarker(parameters);
-                    break;
-                }
-                case '_findAndDeleteStoredMarker': {
-                    const parameters = {
-                        props: props,
-                        place: place
-                    };
-  
-                    _findAndDeleteStoredMarker(parameters);
                     break;
                 }
                 default:
@@ -105,7 +88,6 @@ export const getPlaceByGeocodeLatLng = (input, map, place, props, next , marker)
   
           switch(status){
             case 'OVER_QUERY_LIMIT':
-              //_repeatNextDueToOverQueryLimit(next, input, map, place, props, marker);
               resolve(status);
               break;
             case 'ZERO_RESULTS':
@@ -120,24 +102,7 @@ export const getPlaceByGeocodeLatLng = (input, map, place, props, next , marker)
       });
     })
 }
-const _repeatNextDueToOverQueryLimit = (next, input, map, place, props, marker) => {
-  switch(next){
-    case '_findAndDeleteStoredMarker':
-      setTimeout(
-        getPlaceByGeocodeLatLng(
-          input, 
-          map, 
-          place, 
-          props, 
-          next,
-          marker)
-        , 1000);
-      break;
-      default:
-      break;
-  }
-}
-const _findAndDeleteStoredMarker = (parameters) => {
+export const findAndDeleteStoredMarker = (parameters) => {
 
     var {props, place} = parameters;
 
@@ -164,7 +129,8 @@ const _placeMarkerAndPanTo =  (latLng, map, props) => {
       // calculate lat lng
       const marker = new window.google.maps.Marker({
           position: latLng,
-          map: map
+          map: map,
+          animation: window.google.maps.Animation.DROP
       });
   
       map.panTo(latLng);
@@ -210,14 +176,14 @@ const _addMarkerAfterClickOnMap = (parameters) => {
     // add marker & infowindow after click on map 
     props.addMarker(marker);
     const infowindow = new window.google.maps.InfoWindow;
-
+    
     const objToSend = {
         latLng: input, 
-        locationName: results,
-        photos: null, //results[0].photos,
+        locationName: results.formatted_address,
         sendToList: false,
         marker: marker,
-        infowindow: infowindow
+        infowindow: infowindow,
+        detailed: createObjectFromResult(results)
     }
     // set label
     infowindow.setContent(createContentStringMapClick(objToSend));
@@ -249,10 +215,11 @@ const _findAndSelectStoredMarker = (parameters) => {
       const input = `${markerFromStore.getPosition().lat()},${markerFromStore.getPosition().lng()}`; // [TODO] > throw to shared functions
       const objToSend = {
         latLng: input, 
-        locationName: results,
+        locationName: results.formatted_address,
+        detailed: createObjectFromResult(results)
     }
       infoWindowFromStore.setContent(createContentStringMapClick(objToSend));
-      // infoWindowFromStore.setContent(results);
+
       if (props.showAllInfoWindows)
         infoWindowFromStore.open(map, markerFromStore);  
       else
@@ -260,4 +227,42 @@ const _findAndSelectStoredMarker = (parameters) => {
     }
 }
 
+export const createObjectFromResult = (result) => {
 
+  let newObj = {};
+  const address = result.address_components;
+  console.log(result);
+  for(let i = 0;i < address.length;i++){
+
+    const types = address[i].types;
+    for(let i2 = 0; i2 < types.length; i2++){
+
+      switch(types[i2]){
+        case 'locality':
+          newObj.town = address[i].long_name;
+          break;
+        case 'street_number':
+          newObj.streetNumber = address[i].long_name;
+          break;
+        case 'route':
+          newObj.route = address[i].long_name;
+          break;
+        case 'administrative_area_level_1':
+          newObj.political = address[i].long_name;
+          break;
+        case 'administrative_area_level_2':
+          newObj.area = address[i].long_name;
+          break;
+        case 'country':
+          newObj.country = address[i].long_name;
+          break;
+        case 'postal_code':
+          newObj.postalCode = address[i].long_name;
+          break;
+        default:
+          break;
+      }
+    }
+  }
+  return newObj;
+}

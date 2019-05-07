@@ -1,7 +1,7 @@
 import React from 'react';
 //redux
 //css
-import '../../App.css';
+import '../../Map.css';
 
 const GoogleMap = () => {
     return(

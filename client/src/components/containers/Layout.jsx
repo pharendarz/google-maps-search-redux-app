@@ -17,7 +17,8 @@ import {addInfoWindow, getCurrentInfoWindows} from '../../actions/infoWindowsAct
 import {changeCurrentSnackbar} from '../../actions/snackbarsActions';
 //app functions
 import {handleRenderMap} from '../../functions/mapFunctions';
-const showAllInfoWindows = false;
+
+const showAllInfoWindows = false; // [TODO]
 
 const styles = theme => ({
     root: {
@@ -40,22 +41,15 @@ class Layout extends Component {
     render(){
         const classes = this.props;
         return(
-            <div style={{margin: '0 auto', textAlign: 'center'}}>
-                <Paper style={{
-                    // background: '#fff', 
-                    // height: 600,
-                    // width: 800,
-                    // flexGrow: 1,
-                }} 
-                    elevation={7}
-                >
+            <div style={{margin: '0 auto', textAlign: 'left'}}>
+                <Paper elevation={7}>
                     <br/>
                     <SearchBar map={this.props.map}/>
                     <br/>
 
                     <Grid container justify="space-between" alignItems="flex-start">
                         <Grid item xs={8}>
-                            {/* //add spinner */}
+                            {/* [TODO] add spinner */}
                             <GoogleMap />
                         
                         </Grid>

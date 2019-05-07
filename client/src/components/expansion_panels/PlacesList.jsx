@@ -1,13 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import {ExpansionPanel, Button, IconButton, Tooltip, Grid} from '@material-ui/core/';
+import {ExpansionPanel, Button, IconButton, Tooltip, Grid, FormControl, Input, InputLabel} from '@material-ui/core/';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { withSnackbar } from 'notistack';
 // app functions
-import {getPlaceByGeocodeLatLng} from '../../functions/mapFunctions';
+import {getPlaceByGeocodeLatLng, findAndDeleteStoredMarker} from '../../functions/mapFunctions';
+import {cutLatLng} from '../../functions/sharedFunctions';
 // redux
 import {connect} from 'react-redux';
 // app actions
@@ -19,7 +21,6 @@ import {changeCurrentSnackbar} from '../../actions/snackbarsActions';
 import AddToListButton from '../buttons/AddToListButton';
 import DeleteAllButton from '../buttons/DeleteAllButton';
 // icons
-import DirectionsIcon from '@material-ui/icons/Directions';
 import {PinDrop, DeleteForever} from '@material-ui/icons/';
 const styles = theme => ({
   root: {
@@ -46,7 +47,7 @@ class LocationsList extends React.Component {
         });
     };
     
-    handleSelectListItem = (place) => {
+    handleSelectListItem = place => {
       getPlaceByGeocodeLatLng(
         place.latLng, 
         this.props.map, 
@@ -56,20 +57,24 @@ class LocationsList extends React.Component {
         null
       );
     }
-    handleDeleteListItem = (place) => {
-      getPlaceByGeocodeLatLng(
-          place.latLng, 
-          this.props.map, 
-          place, 
-          this.props, 
-          '_findAndDeleteStoredMarker',
-          null);
+    handleDeleteListItem = async place => {
+      const parameters = {
+        props: this.props,
+        place: place
+      };
+      findAndDeleteStoredMarker(parameters);
+      this.props.enqueueSnackbar(
+        `Deleted [${place.locationName}] from list.`,
+        {variant: 'info',});
     }
     render(){
         const { expanded } = this.state;
         const { classes } = this.props;
 
         const selectedPlaces = this.props.places.map(place => {
+            const {streetNumber, route, political, area, country, postalCode, town} = place.detailed;
+            const lat = cutLatLng(place.latLng).lat;
+            const lng = cutLatLng(place.latLng).lng;
             return (
               <ExpansionPanel expanded={expanded === place.latLng} onChange={this.handleChange(place.latLng)}>
                   <ExpansionPanelSummary  expandIcon={<ExpandMoreIcon />}>
@@ -111,9 +116,80 @@ class LocationsList extends React.Component {
                     </Grid>
                   </ExpansionPanelSummary>
                   <ExpansionPanelDetails style={{background: '#F1F1F1'}}>
-                  <Typography>
-                      {place.latLng} 
-                  </Typography>
+                    <Grid container justify="space-between" alignItems="flex-start">
+                        {route ?
+                          <Grid item xs={6}>
+                            <FormControl >
+                              <InputLabel>Street:</InputLabel>
+                              <Input readOnly value={`${route} ${streetNumber ? streetNumber : null}`}/>
+                            </FormControl>  
+                          </Grid>
+                        : 
+                        null}
+                        {town ?
+                        <Grid item xs={6}>
+                          <FormControl >
+                            <InputLabel>Town:</InputLabel>
+                            <Input readOnly value={town}/>
+                          </FormControl>  
+                        </Grid>
+                        : 
+                        null}
+                        {political ?
+                        <Grid item xs={6}>
+                          <FormControl >
+                            <InputLabel>Region:</InputLabel>
+                            <Input value={political}/>
+                          </FormControl> 
+                        </Grid>
+                        : 
+                        null}
+                        {area ?
+                        <Grid item xs={6}>
+                          <FormControl >
+                            <InputLabel>Area:</InputLabel>
+                            <Input value={area}/>
+                          </FormControl>  
+                        </Grid>
+                        : 
+                        null}
+                        {country ?
+                        <Grid item xs={6}>
+                          <FormControl >
+                            <InputLabel>Country:</InputLabel>
+                            <Input value={country}/>
+                          </FormControl>  
+                        </Grid>
+                        : 
+                        null}
+                        {postalCode ?
+                        <Grid item xs={6}>
+                          <FormControl >
+                            <InputLabel>Postal code:</InputLabel>
+                            <Input value={postalCode}/>
+                          </FormControl>  
+                        </Grid>
+                        : 
+                        null}
+                        {lat ?
+                        <Grid item xs={6}>
+                          <FormControl >
+                            <InputLabel>Lattitude:</InputLabel>
+                            <Input value={lat}/>
+                          </FormControl>  
+                        </Grid>
+                        : 
+                        null}
+                        {lng ?
+                        <Grid item xs={6}>
+                          <FormControl >
+                            <InputLabel>Longtitude:</InputLabel>
+                            <Input value={lng}/>
+                          </FormControl>  
+                        </Grid>
+                        : 
+                        null}
+                    </Grid>
                   </ExpansionPanelDetails>
               </ExpansionPanel>
             )
@@ -121,18 +197,20 @@ class LocationsList extends React.Component {
       return (
         <div className={classes.root}>
           <Grid container justify="space-between" alignItems="flex-start">
-              <Grid item xs={6}>
+              {/* buttons */}
+              <Grid item xs={3}>
                 <AddToListButton/>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={3}>
                 <DeleteAllButton deleteAllLocationsFromLocationList={this.props.deleteAllLocationsFromLocationList} passProps={this.props}/>
-
               </Grid>
+              {/* dummy item */}
+              <Grid item xs={6}/>
+              {/* locations */}
               <Grid item xs={12}>
                 {selectedPlaces}
               </Grid>
           </Grid>
-            {/* <Button>Show/Hide List</Button> */}
         </div>
       );
 
@@ -156,4 +234,4 @@ export default withStyles(styles)(
     deleteOneLocationFromLocationList,
     deleteAllLocationsFromLocationList,
     changeCurrentSnackbar
-  })(LocationsList));
+  })(withSnackbar(LocationsList)));

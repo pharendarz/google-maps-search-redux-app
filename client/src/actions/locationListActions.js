@@ -1,5 +1,5 @@
 import {deleteFromBufferAfterMerge} from './locationBufferActions';
-import {getPlaceByGeocodeLatLng} from '../functions/mapFunctions';
+import {findAndDeleteStoredMarker} from '../functions/mapFunctions';
 
 export const mergeLocationsWithBufferList = (locationsBuffer) => (dispatch, getState) => { 
     dispatch({
@@ -17,17 +17,11 @@ export const deleteOneLocationFromLocationList = (objPlace) => {
 }
 export const deleteAllLocationsFromLocationList = (props) => (dispatch) => {
 
-    props.locationsOnList.forEach(async location => {
-        
-        const resultFromGeo = await getPlaceByGeocodeLatLng(
-            location.latLng, 
-            props.map, 
-            location, 
-            props, 
-            '_findAndDeleteStoredMarker',
-            null);
-        // call action for show snackbar if over query    
-        if (resultFromGeo)
-            dispatch(props.changeCurrentSnackbar(resultFromGeo));
+    props.locationsOnList.forEach(async place => {
+        const parameters = {
+            props: props,
+            place: place
+        };
+        findAndDeleteStoredMarker(parameters);
     })
 }

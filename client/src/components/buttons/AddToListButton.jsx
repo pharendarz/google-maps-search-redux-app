@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
+import { withSnackbar } from 'notistack';
 import {Button, Checkbox, FormControlLabel, Badge} from '@material-ui/core';
-
 //redux
 import {connect} from 'react-redux';
 //redux actions
@@ -11,6 +11,9 @@ class AddToListButton extends Component {
 
     handleAddToListFromBuffer = () => {
         this.props.mergeLocationsWithBufferList(this.props.locationsBuffer);
+        this.props.enqueueSnackbar(
+            `Added ${this.props.locationsBuffer.length} ${this.props.locationsBuffer.length > 1 ? 'locations' : 'location'} to list.`,
+            {variant: 'success',});
     }
 
     render(){
@@ -28,6 +31,7 @@ class AddToListButton extends Component {
             <div>
 
                 {locationCounter}
+                {/* // [TODO] */}
                 {/* <FormControlLabel
                     control={
                     <Checkbox
@@ -49,4 +53,4 @@ const mapStateToProps = (state) => {
         locationsBuffer: state.locationsBuffer
     }
 }
-export default connect(mapStateToProps, {mergeLocationsWithBufferList})(AddToListButton);
+export default connect(mapStateToProps, {mergeLocationsWithBufferList})(withSnackbar(AddToListButton));
