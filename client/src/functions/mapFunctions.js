@@ -1,6 +1,7 @@
-//app config
+// app config
 import {loadScript} from '../config';
 import {keys} from '../config/keys';
+// app functions
 import {handleSearchBarSelection} from './autocompleteFunctions';
 import {findInArray, openOneInfoWindow, createContentStringMapClick} from './sharedFunctions';
 
@@ -231,7 +232,6 @@ export const createObjectFromResult = (result) => {
 
   let newObj = {};
   const address = result.address_components;
-  console.log(result);
   for(let i = 0;i < address.length;i++){
 
     const types = address[i].types;

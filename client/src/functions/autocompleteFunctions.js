@@ -1,3 +1,4 @@
+// app functions
 import {openOneInfoWindow, createContentStringAutoComplete} from './sharedFunctions';
 import {createObjectFromResult} from './mapFunctions';
 

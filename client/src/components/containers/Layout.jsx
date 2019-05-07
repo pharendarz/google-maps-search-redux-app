@@ -1,45 +1,30 @@
 import React, {Component} from 'react';
-//application components
+// application components
 import GoogleMap from '../maps/GoogleMap';
 import SearchBar from '../inputs/SearchBar';
 import PlacesList from '../expansion_panels/PlacesList';
 import Snackbars from '../snackbars/Snackbar';
-//style
+// material-ui
 import {Grid, Paper} from '@material-ui/core/'
 import { withStyles } from '@material-ui/core/styles';
-//redux
+// redux
 import {connect} from 'react-redux';
-//redux actions
+// redux actions
 import {addOneLocationToBufferList} from '../../actions/locationBufferActions';
 import {initMap} from '../../actions/mapActions';
 import {addMarker} from '../../actions/markersActions';
 import {addInfoWindow, getCurrentInfoWindows} from '../../actions/infoWindowsActions';
 import {changeCurrentSnackbar} from '../../actions/snackbarsActions';
-//app functions
+// app functions
 import {handleRenderMap} from '../../functions/mapFunctions';
 
 const showAllInfoWindows = false; // [TODO]
-
-const styles = theme => ({
-    root: {
-        flexGrow: 1,
-        background: '#C96567',
-        overflowX: 'hidden',
-        paddingTop: '5px',
-        paddingBottom: '8px',
-    },
-    paper: {
-        height: 140,
-        width: 100,
-    },
-  });
 
 class Layout extends Component {
     componentDidMount() {
         handleRenderMap(this.props);
     }
     render(){
-        const classes = this.props;
         return(
             <div style={{margin: '0 auto', textAlign: 'left'}}>
                 <Paper elevation={7}>
@@ -51,7 +36,6 @@ class Layout extends Component {
                         <Grid item xs={8}>
                             {/* [TODO] add spinner */}
                             <GoogleMap />
-                        
                         </Grid>
                         <Grid item xs={4}>
                             <PlacesList 
@@ -84,4 +68,4 @@ export default connect(
         addInfoWindow,
         getCurrentInfoWindows,
         changeCurrentSnackbar
-    })(withStyles(styles)(Layout));
+    })(Layout);

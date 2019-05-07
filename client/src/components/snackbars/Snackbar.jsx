@@ -3,7 +3,6 @@ import { withSnackbar } from 'notistack';
 
 class Snackbars extends PureComponent {
     render(){
-        console.log('PROPS IN SNACKBAR', this.props.snackbars);
         switch(this.props.snackbars[0]){
             case 'ZERO_RESULTS':
                 this.props.enqueueSnackbar(

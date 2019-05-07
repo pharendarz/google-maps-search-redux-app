@@ -21,10 +21,6 @@ export const openAllInfoWindows = (infoWindows, markers, map) => {
   }
 }
 
-export const createGoogleMapObject = (parameters) => {
-
-}
-
 //[TODO - corrections]
 export const createContentStringAutoComplete = (object) => {
   const cuttedLatLng = cutLatLng(object.latLng, 9);

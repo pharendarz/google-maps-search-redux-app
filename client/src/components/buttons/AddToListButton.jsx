@@ -1,9 +1,10 @@
 import React, {Component} from 'react';
-import { withSnackbar } from 'notistack';
+// material-ui
+import {withSnackbar} from 'notistack';
 import {Button, Checkbox, FormControlLabel, Badge} from '@material-ui/core';
-//redux
+// redux
 import {connect} from 'react-redux';
-//redux actions
+// redux actions
 import {mergeLocationsWithBufferList} from '../../actions/locationListActions';
 
 

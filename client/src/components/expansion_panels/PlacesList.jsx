@@ -1,10 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+// material-ui
 import { withStyles } from '@material-ui/core/styles';
-import {ExpansionPanel, Button, IconButton, Tooltip, Grid, FormControl, Input, InputLabel} from '@material-ui/core/';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import Typography from '@material-ui/core/Typography';
+import {ExpansionPanel, Button, IconButton, Tooltip, Grid, FormControl, Input, InputLabel, ExpansionPanelSummary, ExpansionPanelDetails,
+  Typography} from '@material-ui/core/';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { withSnackbar } from 'notistack';
 // app functions
@@ -22,6 +21,7 @@ import AddToListButton from '../buttons/AddToListButton';
 import DeleteAllButton from '../buttons/DeleteAllButton';
 // icons
 import {PinDrop, DeleteForever} from '@material-ui/icons/';
+
 const styles = theme => ({
   root: {
     width: '30vw',

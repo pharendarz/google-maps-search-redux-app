@@ -11,10 +11,8 @@ import snackbarsReducer from './snackbarsReducer';
 export default combineReducers({
     locationsOnList: locationsReducer,
     locationsBuffer: locationsBufferReducer,
-    //ADD CONFIG REDUCER for example: 
     map: mapReducer,
     markers: markersReducer,
     infoWindows: infoWindowsReducer,
     snackbars: snackbarsReducer
-    //zoom for google maps, it cant be 
 })

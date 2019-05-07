@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+// material-ui
 import { withStyles } from '@material-ui/core/styles';
-import {Paper, IconButton, Button, Badge} from '@material-ui/core/';
-import InputBase from '@material-ui/core/InputBase';
+import { Paper, IconButton, InputBase } from '@material-ui/core/';
 import SearchIcon from '@material-ui/icons/Search';
-//redux
-import {connect} from 'react-redux';
 
 const styles = {
   root: {
@@ -48,4 +46,5 @@ class SearchBar extends Component {
 SearchBar.propTypes = {
   classes: PropTypes.object.isRequired,
 };
+
 export default withStyles(styles)(SearchBar);

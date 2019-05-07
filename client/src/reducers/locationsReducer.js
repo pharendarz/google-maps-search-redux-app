@@ -1,5 +1,4 @@
 export default (locationsOnList = [], action) => {
-    // console.log(action.type);
     switch(action.type){
 
         case 'ADD_ONE_LOCATION_TO_LIST':
